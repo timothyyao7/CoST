@@ -1,2 +1,4 @@
 __pycache__/
 *.pkl
+datasets/*.csv
+datasets/LD2011_2014.txt

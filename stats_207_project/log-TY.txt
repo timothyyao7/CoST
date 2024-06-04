@@ -1,0 +1,37 @@
+### CREATE CONDA ENVIRONMENT ###
+create new conda environment: conda create -n cost python=3.8
+install all dependencies in requirements.txt EXCEPT for torch (install the other dependencies one-by-one)
+install torch separately (with cuda): conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+
+### DOWNLOAD AND PREPROCESS ELECTRICITY DATASET ###
+download electricity dataset from https://archive.ics.uci.edu/dataset/321/electricityloaddiagrams20112014
+extract and place LD2011_2014.txt file into datasets folder
+python electricity.py
+
+### RUN MODEL ON ELECTRICITY DATASET
+python train.py electricity forecast_univar --alpha 0.0005 --kernels 1 2 4 8 16 32 64 128 --max-train-length 201 --batch-size 128 --archive forecast_csv_univar --repr-dims 320 --max-threads 8 --eval
+--Evaluation result: {'ours': {24: {'norm': {'MSE': 0.2448862231697096, 'MAE': 0.2728870045552742}, 'raw': {'MSE': 143.59239655824857, 'MAE': 6.607944742858416}}, 48: {'norm': {'MSE': 0.29266839514975956, 'MAE': 0.3069471235562016}, 'raw': {'MSE': 171.6101289648924, 'MAE': 7.432708784071729}}, 168: {'norm': {'MSE': 0.40285509321077134, 'MAE': 0.38106722763525336}, 'raw': {'MSE': 236.21961196060067, 'MAE': 9.227523331381173}}, 336: {'norm': {'MSE': 0.5523162916365232, 'MAE': 0.4685564150907984}, 'raw': {'MSE': 323.85823583061097, 'MAE': 11.346069503082939}}, 720: {'norm': {'MSE': 0.8743921832174718, 'MAE': 0.6455890118670486}, 'raw': {'MSE': 512.7118508517774, 'MAE': 15.632904652588163}}}, 'encoder_infer_time': 9.885488510131836, 'lr_train_time': {24: 0.8593316078186035, 48: 0.984980583190918, 168: 1.4933772087097168, 336: 2.2823972702026367, 720: 3.7027769088745117}, 'lr_infer_time': {24: 0.0039463043212890625, 48: 0.008900165557861328, 168: 0.009029150009155273, 336: 0.014002323150634766, 720: 0.03409457206726074}}
+
+### DOWNLOAD WEATHER DATASET ###
+download weather dataset from https://github.com/zhouhaoyi/Informer2020 (find link to google drive)
+place WTH.csv in datasets folder
+
+### RUN MODEL ON WEATHER DATASET ###
+python train.py WTH forecast_univar --alpha 0.0005 --kernels 1 2 4 8 16 32 64 128 --max-train-length 201 --batch-size 128 --archive forecast_csv_univar --repr-dims 320 --max-threads 8 --eval
+--warning: C:\Users\timot\anaconda3\envs\cost\lib\site-packages\torch\nn\modules\conv.py:306: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return F.conv1d(input, weight, bias, self.stride,
+--Evaluation result: {'ours': {24: {'norm': {'MSE': 0.09534841577376477, 'MAE': 0.2119128931782617}, 'raw': {'MSE': 4.198480446745455, 'MAE': 1.4061987570657146}}, 48: {'norm': {'MSE': 0.13786637768959842, 'MAE': 0.260905964314062}, 'raw': {'MSE': 6.070675510885799, 'MAE': 1.7313040156518105}}, 168: {'norm': {'MSE': 0.2038201758181604, 'MAE': 0.33094832694378895}, 'raw': {'MSE': 8.974821643099306, 'MAE': 2.1960868862762384}}, 336: {'norm': {'MSE': 0.23057471327909013, 'MAE': 0.3556473022481107}, 'raw': {'MSE': 10.152905228230997, 'MAE': 2.359982851806203}}, 720: {'norm': {'MSE': 0.23801128660424367, 'MAE': 0.36605720196743746}, 'raw': {'MSE': 10.480360135477012, 'MAE': 2.4290602335537876}}}, 'encoder_infer_time': 13.058956861495972, 'lr_train_time': {24: 1.158919334411621, 48: 1.365792989730835, 168: 1.2726519107818604, 336: 3.016019105911255, 720: 5.110997676849365}, 'lr_infer_time': {24: 0.004997730255126953, 48: 0.006000041961669922, 168: 0.008369207382202148, 336: 0.026015758514404297, 720: 0.0519404411315918}}
+
+### DOWNLOAD ELECTRICITY TRANSFORMERS (ETTh1 & ETTh2) DATASETS ###
+download from https://github.com/zhouhaoyi/ETDataset
+
+### RUN MODEL ON ELECTRICITY TRANSFORMERS (ETTh1 & ETTh2) DATASETS ###
+python train.py ETTh1 forecast_univar --alpha 0.0005 --kernels 1 2 4 8 16 32 64 128 --max-train-length 201 --batch-size 128 --archive forecast_csv_univar --repr-dims 320 --max-threads 8 --eval
+--C:\Users\timot\anaconda3\envs\cost\lib\site-packages\torch\nn\modules\conv.py:306: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return F.conv1d(input, weight, bias, self.stride,
+--Evaluation result: {'ours': {24: {'norm': {'MSE': 0.03747694485898959, 'MAE': 0.14764086469255558}, 'raw': {'MSE': 3.155858028400667, 'MAE': 1.354825051157082}}, 48: {'norm': {'MSE': 0.057512850872085276, 'MAE': 0.18249138364741418}, 'raw': {'MSE': 4.843041342917397, 'MAE': 1.674630525220968}}, 168: {'norm': {'MSE': 0.09647131796242725, 'MAE': 0.23729344881378214}, 'raw': {'MSE': 8.123655388578017, 'MAE': 2.177521176514045}}, 336: {'norm': {'MSE': 0.11285862680720112, 'MAE': 0.2607577265850114}, 'raw': {'MSE': 9.503597639354465, 'MAE': 2.392840903696233}}, 720: {'norm': {'MSE': 0.1734553989909269, 'MAE': 0.33567607506693625}, 'raw': {'MSE': 14.60632973272224, 'MAE': 3.080328439633089}}}, 'encoder_infer_time': 7.029797554016113, 'lr_train_time': {24: 0.5116713047027588, 48: 0.648369550704956, 168: 0.8493776321411133, 336: 1.064762830734253, 720: 1.8164894580841064}, 'lr_infer_time': {24: 0.003907442092895508, 48: 0.003870725631713867, 168: 0.006054401397705078, 336: 0.008094310760498047, 720: 0.014978408813476562}}
+
+python train.py ETTh2 forecast_univar --alpha 0.0005 --kernels 1 2 4 8 16 32 64 128 --max-train-length 201 --batch-size 128 --archive forecast_csv_univar --repr-dims 320 --max-threads 8 --eval
+--C:\Users\timot\anaconda3\envs\cost\lib\site-packages\torch\nn\modules\conv.py:306: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return F.conv1d(input, weight, bias, self.stride,
+--Evaluation result: {'ours': {24: {'norm': {'MSE': 0.07648932016360577, 'MAE': 0.20476100903087735}, 'raw': {'MSE': 10.26530362981068, 'MAE': 2.3720987286478135}}, 48: {'norm': {'MSE': 0.11156887596378795, 'MAE': 0.25272745690977216}, 'raw': {'MSE': 14.973180377419673, 'MAE': 2.9277765402027884}}, 168: {'norm': {'MSE': 0.17448496478389527, 'MAE': 0.3286549336291795}, 'raw': {'MSE': 23.416878815520427, 'MAE': 3.8073750138418823}}, 336: {'norm': {'MSE': 0.19612481326576867, 'MAE': 0.3547833649175444}, 'raw': {'MSE': 26.321070015267527, 'MAE': 4.110065540698708}}, 720: {'norm': {'MSE': 0.20045062020634433, 'MAE': 0.36386950287628317}, 'raw': {'MSE': 26.901617949154954, 'MAE': 4.2153258920430146}}}, 'encoder_infer_time': 6.602524995803833, 'lr_train_time': {24: 0.5530049800872803, 48: 0.6095261573791504, 168: 0.8070030212402344, 336: 1.1090071201324463, 720: 1.7239313125610352}, 'lr_infer_time': {24: 0.0019958019256591797, 48: 0.004987478256225586, 168: 0.0069844722747802734, 336: 0.00696253776550293, 720: 0.010994672775268555}}
